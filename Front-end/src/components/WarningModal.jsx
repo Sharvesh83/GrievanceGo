@@ -8,7 +8,7 @@ import {
     AlertDialogOverlay,
 } from '@chakra-ui/react'
 
-const WarningModal = ({ onClose }) => {
+const WarningModal = ({ onClose, onConfirm }) => {
     return (
         <AlertDialog isOpen={true} onClose={onClose}>
             <AlertDialogOverlay>
@@ -30,7 +30,11 @@ const WarningModal = ({ onClose }) => {
                     </AlertDialogBody>
 
                     <AlertDialogFooter fontFamily="Roboto-Bold">
-                        <Button bgColor="black" color="white">
+                        <Button
+                            bgColor="black"
+                            color="white"
+                            onClick={onConfirm}
+                        >
                             Resolve
                         </Button>
                         <Button

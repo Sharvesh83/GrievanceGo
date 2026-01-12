@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
     Box,
     Text,
@@ -11,12 +11,27 @@ import {
     Button,
     Input,
 } from '@chakra-ui/react'
+import { useDispatch, useSelector } from 'react-redux'
+import { addingchat } from './Redux/actions'
 
 const ReplyModal = ({ onClose, complaint }) => {
-    const { Subject, Details } = complaint
+    const { subject, description, _id } = complaint
     const [showInput, setShowInput] = useState(false)
+    const [chat, setChat] = useState('')
+
     const handleReplyClick = () => {
         setShowInput(true)
+    }
+
+    const data_chats = useSelector(state => state.info)
+    const redData = data_chats.filter(elem => {
+        return elem._id == complaint._id
+    })
+    // console.log('data_chats', redData) //Needs to be removed before deploying
+
+    const dispatch = useDispatch()
+    let addChat = () => {
+        dispatch(addingchat({ _id, chat }))
     }
 
     return (
@@ -43,10 +58,10 @@ const ReplyModal = ({ onClose, complaint }) => {
                         fontFamily="Roboto-Bold"
                     >
                         <Box>
-                            <Text display="inline">{Subject}</Text>
+                            <Text display="inline">{subject}</Text>
 
                             <Text paddingTop="4px" fontFamily="Roboto-Regular">
-                                {Details}
+                                {description}
                             </Text>
                         </Box>
                     </Box>
@@ -56,42 +71,41 @@ const ReplyModal = ({ onClose, complaint }) => {
                         overflowX="hidden"
                         maxH="231px"
                     >
-                        <Box
-                            bgColor="white"
-                            marginTop="8px"
-                            marginLeft="3px"
-                            paddingTop="10px"
-                            paddingLeft="13px"
-                            paddingRight="15px"
-                            paddingBottom="10px"
-                            w="542px"
-                            fontFamily="Roboto-Bold"
-                        >
-                            {complaint.Chats?.map((comp, index) => {
-                                return (
+                        {redData[0].chats?.map((comp, index) => {
+                            return (
+                                <Box
+                                    bgColor="white"
+                                    marginTop="8px"
+                                    marginLeft="3px"
+                                    paddingTop="10px"
+                                    paddingLeft="13px"
+                                    paddingRight="15px"
+                                    paddingBottom="10px"
+                                    w="542px"
+                                    fontFamily="Roboto-Bold"
+                                >
                                     <Box key={index}>
-                                        <Text fontSize="14px" color="black">
+                                        {/* <Text fontSize="14px" color="black">
                                             {comp.sender}
-                                        </Text>
+                                        </Text> */}
                                         <Text
                                             fontFamily="Roboto-Medium"
                                             w="80%"
                                             fontSize="15px"
                                         >
-                                            {comp.message}
+                                            {comp}
                                         </Text>
-                                        <Text
+                                        {/* <Text
                                             color="rgba(130, 130, 130, 1)"
                                             fontFamily="Roboto-Italic"
                                             textAlign="right"
                                             fontSize="12px"
                                         >
-                                            {comp.timestamp}
-                                        </Text>
+                                        </Text> */}
                                     </Box>
-                                )
-                            })}
-                        </Box>
+                                </Box>
+                            )
+                        })}
                     </Box>
                 </ModalBody>
 
@@ -104,11 +118,15 @@ const ReplyModal = ({ onClose, complaint }) => {
                                 placeholder="Enter your message"
                                 bgColor="white"
                                 marginRight="10px"
+                                onChange={event => {
+                                    setChat(event.target.value)
+                                }}
                             />
                             <Button
                                 colorScheme="black"
                                 bgColor="black"
                                 color="white"
+                                onClick={addChat}
                             >
                                 Send
                             </Button>
@@ -126,6 +144,7 @@ const ReplyModal = ({ onClose, complaint }) => {
                 </ModalFooter>
             </ModalContent>
         </Modal>
+        // <div>hellooo</div>
     )
 }
 

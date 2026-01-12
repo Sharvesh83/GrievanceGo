@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import {
     Box,
     Text,
@@ -10,8 +10,18 @@ import {
     ModalBody,
     Divider,
 } from '@chakra-ui/react'
+import { getinfo } from './Redux/actions'
+import { useDispatch, useSelector } from 'react-redux'
 
 const ComplaintViewModal = ({ onClose, complaint }) => {
+    const dispatch = useDispatch()
+
+    useEffect(() => {
+        dispatch(getinfo())
+    }, [])
+
+    console.log('complaint in complaint modal', complaint.name) //Needs to be removed before deploying
+
     return (
         <Modal isOpen={true} onClose={onClose} isCentered>
             <ModalOverlay />
@@ -22,54 +32,63 @@ const ComplaintViewModal = ({ onClose, complaint }) => {
                 w="100%"
                 h="100%"
             >
-                <ModalHeader fontFamily="Roboto-Bold">
-                    {complaint.Subject}
-                </ModalHeader>
-                <ModalCloseButton />
-                <ModalBody fontFamily="Roboto">
-                    {complaint.Details}
-                    <Divider my={6} />
-                    <Box display="flex" flexDirection="column">
-                        <Box display="flex" my={2.2}>
-                            <Text fontFamily="Roboto-Bold" width={120}>
-                                Name:
-                            </Text>
-                            {complaint.Name}
+                <>
+                    <ModalHeader fontFamily="Roboto-Bold">
+                        {complaint.subject}
+                    </ModalHeader>
+                    <ModalCloseButton />
+                    <ModalBody fontFamily="Roboto">
+                        {complaint.details}
+                        <Divider my={6} />
+                        <Box display="flex" flexDirection="column">
+                            <Box display="flex" my={2.2}>
+                                <Text fontFamily="Roboto-Bold" width={120}>
+                                    Name:
+                                </Text>
+                                {complaint.name}
+                            </Box>
+                            <Box display="flex" my={2.2}>
+                                <Text fontFamily="Roboto-Bold" width={120}>
+                                    Phone No:
+                                </Text>
+                                {complaint.phoneno}
+                            </Box>
+                            <Box display="flex" my={2.2}>
+                                <Text fontFamily="Roboto-Bold" width={120}>
+                                    AreaLimit:
+                                </Text>
+                                {complaint.arealimit}
+                            </Box>
+                            <Box display="flex" my={2.2}>
+                                <Text fontFamily="Roboto-Bold" width={120}>
+                                    Ward No:
+                                </Text>
+                                {complaint.wardno}
+                            </Box>
+                            <Box display="flex" my={2.2}>
+                                <Text fontFamily="Roboto-Bold" width={120}>
+                                    Department:
+                                </Text>
+                                {complaint.department}
+                            </Box>
+                            <Box fontFamily="Roboto" display="flex" my={2.2}>
+                                <Text fontFamily="Roboto-Bold" width={120}>
+                                    Address:
+                                </Text>
+                                {complaint.address}
+                            </Box>
+                            <Box fontFamily="Roboto" display="flex" my={2.2}>
+                                <Text fontFamily="Roboto-Bold" width={120}>
+                                    Description :
+                                </Text>
+                                {complaint.description}
+                            </Box>
                         </Box>
-                        <Box display="flex" my={2.2}>
-                            <Text fontFamily="Roboto-Bold" width={120}>
-                                Phone No:
-                            </Text>
-                            {complaint['PhoneNo']}
-                        </Box>
-                        <Box display="flex" my={2.2}>
-                            <Text fontFamily="Roboto-Bold" width={120}>
-                                AreaLimit:
-                            </Text>
-                            {complaint['AreaLimit']}
-                        </Box>
-                        <Box display="flex" my={2.2}>
-                            <Text fontFamily="Roboto-Bold" width={120}>
-                                Ward No:
-                            </Text>
-                            {complaint.WardNo}
-                        </Box>
-                        <Box display="flex" my={2.2}>
-                            <Text fontFamily="Roboto-Bold" width={120}>
-                                Department:
-                            </Text>
-                            {complaint.Department}
-                        </Box>
-                        <Box fontFamily="Roboto" display="flex" my={2.2}>
-                            <Text fontFamily="Roboto-Bold" width={120}>
-                                Address:
-                            </Text>
-                            {complaint.Address}
-                        </Box>
-                    </Box>
-                </ModalBody>
+                    </ModalBody>
+                </>
             </ModalContent>
         </Modal>
+        // <div>hello</div>
     )
 }
 

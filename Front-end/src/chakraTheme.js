@@ -11,9 +11,7 @@ const customTheme = extendTheme({
                 },
                 tr: {
                     borderRadius: '7px',
-                    '&:nth-child(n+2)': {
-                        marginTop: '20px',
-                    },
+                    marginTop: '20px',
                 },
             },
         },
