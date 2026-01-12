@@ -10,6 +10,8 @@ const Registration = data => {
         department: data.department,
         address: data.address,
         description: data.description,
+        userId: data.userId, // Auth0 sub
+        createdBy: data.createdBy, // Auth0 email
     }
     return async dispatch => {
         try {
@@ -31,10 +33,14 @@ const Registration = data => {
     }
 }
 
-let getinfo = () => {
+let getinfo = (userId) => {
     return async dispatch => {
         try {
-            let url = await fetch('http://localhost:3000/api/info', {
+            let urlStr = 'http://localhost:3000/api/info';
+            if (userId) {
+                urlStr += `?userId=${userId}`;
+            }
+            let url = await fetch(urlStr, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },
             })

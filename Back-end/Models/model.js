@@ -10,6 +10,8 @@ const DataSchema = mongoose.Schema(
     department: { type: String, require: true },
     address: { type: String },
     description: { type: String, require: true },
+    userId: { type: String, required: true }, // Auth0 sub
+    createdBy: { type: String, required: true }, // Auth0 email/name
     chats: [{ type: String }],
     createdOn: { type: Date },
     resolvedOn: { type: Date },
@@ -22,6 +24,6 @@ const DataSchema = mongoose.Schema(
 
 // module.exports = mongoose.model("reginfo", DataSchema);
 
-const User = mongoose.model("Complaint Data", DataSchema);
+const Grievance = mongoose.model("Grievance", DataSchema);
 
-module.exports = { User };
+module.exports = { Grievance };

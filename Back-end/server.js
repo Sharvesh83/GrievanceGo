@@ -1,9 +1,10 @@
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const connectDB = require("./DB/DB");
 const cors = require("cors");
-const { User } = require("./Models/model");
+const { Grievance } = require("./Models/model");
 
 const app = express();
 const port = 3000;
@@ -13,8 +14,13 @@ app.use(cors());
 
 app.get("/api/info", async (req, res) => {
   try {
-    const comp = await User.find();
-    console.log("comp", comp); //Needs to be removed before deploying
+    const { userId } = req.query;
+    let query = {};
+    if (userId) {
+      query = { userId: userId };
+    }
+    const comp = await Grievance.find(query).sort({ createdAt: -1 });
+    // console.log("comp", comp); 
     res.status(200).json(comp);
   } catch (error) {
     console.log(error);
@@ -34,9 +40,11 @@ app.post("/api/addinfo", async (req, res) => {
     department,
     address,
     description,
+    userId,
+    createdBy
   } = req.body;
 
-  const dta = await User.create({
+  const dta = await Grievance.create({
     name,
     wardno,
     phoneno,
@@ -45,18 +53,20 @@ app.post("/api/addinfo", async (req, res) => {
     department,
     address,
     description,
+    userId,
+    createdBy,
     createdOn: new Date(),
-    resolvedOn: "null",
+    resolvedOn: null,
     status: "In progress",
   });
-  const bdta = await User.find();
+  const bdta = await Grievance.find();
   res.status(201).json(bdta);
 });
 
 app.post("/api/addchat", async (req, res) => {
   const { id, chat } = req.body;
 
-  const dta = await User.updateOne(
+  const dta = await Grievance.updateOne(
     {
       _id: id,
     },
@@ -65,7 +75,7 @@ app.post("/api/addchat", async (req, res) => {
     }
   );
 
-  const dta2 = await User.find();
+  const dta2 = await Grievance.find();
 
   res.status(200).send(dta2);
 });
@@ -73,7 +83,7 @@ app.post("/api/addchat", async (req, res) => {
 app.patch("/api/updatestatus", async (req, res) => {
   const { id } = req.body;
 
-  const dta = await User.updateOne(
+  const dta = await Grievance.updateOne(
     {
       _id: id,
     },
@@ -83,7 +93,7 @@ app.patch("/api/updatestatus", async (req, res) => {
     }
   );
 
-  const dta2 = await User.find();
+  const dta2 = await Grievance.find();
 
   res.status(200).send(dta2);
 });
