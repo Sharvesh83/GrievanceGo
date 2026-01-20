@@ -1,23 +1,7 @@
 import React, { useState } from 'react'
-import {
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalHeader,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
-    Button,
-    Grid,
-    GridItem,
-    FormControl,
-    FormLabel,
-    Input,
-    Textarea,
-    Text,
-} from '@chakra-ui/react'
-import { Registration } from './Redux/actions'
 import { useDispatch } from 'react-redux'
+import { Registration } from './Redux/actions'
+import Modal from './Modal'
 
 function NewComplaintModal({ onClose }) {
     const [name, setName] = useState('')
@@ -125,257 +109,83 @@ function NewComplaintModal({ onClose }) {
         return isValid
     }
 
-    return (
-        <Modal isOpen={true} onClose={onClose} isCentered>
-            <ModalOverlay />
-            <ModalContent
-                bgColor="rgba(169,159, 222, 1)"
-                maxW="706px"
-                maxH="878px"
-                w="100%"
+    const footer = (
+        <>
+            <button
+                className="bg-[#1e1e1e] text-white px-4 py-2 rounded hover:bg-black transition-colors"
+                onClick={handleSubmit}
             >
-                <ModalHeader
-                    fontFamily="Roboto-Medium"
-                    paddingTop="38px"
-                    fontSize="20px"
-                >
-                    Please fill out the required fields with your information
-                    and describe your complaint in the space provided below.
-                </ModalHeader>
-                <ModalCloseButton />
-                <ModalBody>
-                    <Grid gap={4} alignItems="center" paddingLeft="20px">
-                        <GridItem colSpan={1}>
-                            <FormControl isInvalid={!validation.name}>
-                                <FormLabel>
-                                    Name{' '}
-                                    {validation.name ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Input
-                                    height="32px"
-                                    width="288px"
-                                    type="text"
-                                    bg="white"
-                                    placeholder="Name"
-                                    onChange={e => handleInputChange(e, 'name')}
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={1}>
-                            <FormControl isInvalid={!validation.wardno}>
-                                <FormLabel>
-                                    Ward No{' '}
-                                    {validation.wardno ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Input
-                                    height="32px"
-                                    width="288px"
-                                    type="number"
-                                    bg="white"
-                                    placeholder="Ward No"
-                                    onChange={e =>
-                                        handleInputChange(e, 'wardno')
-                                    }
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={1}>
-                            <FormControl isInvalid={!validation.phoneno}>
-                                <FormLabel>
-                                    Phone No{' '}
-                                    {validation.phoneno ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Input
-                                    height="32px"
-                                    width="288px"
-                                    type="number"
-                                    bg="white"
-                                    placeholder="Phone No"
-                                    onChange={e =>
-                                        handleInputChange(e, 'phoneno')
-                                    }
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={1}>
-                            <FormControl isInvalid={!validation.arealimit}>
-                                <FormLabel>
-                                    AreaLimit{'  '}
-                                    {validation.arealimit ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Input
-                                    height="32px"
-                                    width="288px"
-                                    type="text"
-                                    bg="white"
-                                    placeholder="AreaLimit"
-                                    onChange={e =>
-                                        handleInputChange(e, 'arealimit')
-                                    }
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={1}>
-                            <FormControl isInvalid={!validation.subject}>
-                                <FormLabel>
-                                    Subject{' '}
-                                    {validation.subject ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Input
-                                    height="32px"
-                                    width="288px"
-                                    type="text"
-                                    bg="white"
-                                    placeholder="Subject"
-                                    onChange={e =>
-                                        handleInputChange(e, 'subject')
-                                    }
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={1}>
-                            <FormControl isInvalid={!validation.department}>
-                                <FormLabel>
-                                    Department{' '}
-                                    {validation.department ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Input
-                                    height="32px"
-                                    width="288px"
-                                    type="text"
-                                    bg="white"
-                                    placeholder="Department"
-                                    onChange={e =>
-                                        handleInputChange(e, 'department')
-                                    }
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={2}>
-                            <FormControl isInvalid={!validation.address}>
-                                <FormLabel>
-                                    Address{' '}
-                                    {validation.address ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Input
-                                    height="32px"
-                                    width="621px"
-                                    type="text"
-                                    bg="white"
-                                    placeholder="Address"
-                                    onChange={e =>
-                                        handleInputChange(e, 'address')
-                                    }
-                                />
-                            </FormControl>
-                        </GridItem>
-                        <GridItem colSpan={2}>
-                            <FormControl isInvalid={!validation.description}>
-                                <FormLabel>
-                                    Describe your Complaint{' '}
-                                    {validation.description ? null : (
-                                        <span
-                                            style={{
-                                                color: 'red',
-                                                fontWeight: 'normal',
-                                            }}
-                                        >
-                                            * Required
-                                        </span>
-                                    )}
-                                </FormLabel>
-                                <Textarea
-                                    height="120px"
-                                    width="621px"
-                                    type="text"
-                                    bg="white"
-                                    placeholder="Describe your Complaint"
-                                    onChange={e =>
-                                        handleInputChange(e, 'description')
-                                    }
-                                />
-                            </FormControl>
-                        </GridItem>
-                    </Grid>
-                </ModalBody>
+                Submit
+            </button>
+            <button
+                className="text-black bg-transparent hover:bg-white/20 px-4 py-2 rounded transition-colors"
+                onClick={onClose}
+            >
+                Cancel
+            </button>
+        </>
+    )
 
-                <ModalFooter>
-                    <Button
-                        bgColor="rgba(30, 30, 30, 1)"
-                        color="white"
-                        mr={3}
-                        onClick={handleSubmit}
-                    >
-                        Submit
-                    </Button>
-                    <Button variant="ghost" color="black" onClick={onClose}>
-                        Cancel
-                    </Button>
-                </ModalFooter>
-            </ModalContent>
+    return (
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            title="Please fill out the required fields with your information and describe your complaint in the space provided below."
+            footer={footer}
+            size="2xl"
+            contentClassName="bg-[#A99FDE]" // Preserving original color
+        >
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 px-5">
+                {[
+                    { label: 'Name', value: name, field: 'name', type: 'text' },
+                    { label: 'Ward No', value: wardno, field: 'wardno', type: 'number' },
+                    { label: 'Phone No', value: phoneno, field: 'phoneno', type: 'number' },
+                    { label: 'AreaLimit', value: arealimit, field: 'arealimit', type: 'text' },
+                    { label: 'Subject', value: subject, field: 'subject', type: 'text' },
+                    { label: 'Department', value: department, field: 'department', type: 'text' },
+                ].map((item) => (
+                    <div key={item.field} className="col-span-1">
+                        <label className="block text-sm font-medium mb-1">
+                            {item.label}
+                            {!validation[item.field] && <span className="text-red-600 ml-1">* Required</span>}
+                        </label>
+                        <input
+                            type={item.type}
+                            className={`w-full h-8 px-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white ${!validation[item.field] ? 'border-red-500' : 'border-transparent'}`}
+                            placeholder={item.label}
+                            value={item.value}
+                            onChange={(e) => handleInputChange(e, item.field)}
+                        />
+                    </div>
+                ))}
+
+                <div className="col-span-2">
+                    <label className="block text-sm font-medium mb-1">
+                        Address
+                        {!validation.address && <span className="text-red-600 ml-1">* Required</span>}
+                    </label>
+                    <input
+                        type="text"
+                        className={`w-full h-8 px-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white ${!validation.address ? 'border-red-500' : 'border-transparent'}`}
+                        placeholder="Address"
+                        value={address}
+                        onChange={(e) => handleInputChange(e, 'address')}
+                    />
+                </div>
+
+                <div className="col-span-2">
+                    <label className="block text-sm font-medium mb-1">
+                        Describe your Complaint
+                        {!validation.description && <span className="text-red-600 ml-1">* Required</span>}
+                    </label>
+                    <textarea
+                        className={`w-full h-[120px] p-2 rounded border focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white resize-none ${!validation.description ? 'border-red-500' : 'border-transparent'}`}
+                        placeholder="Describe your Complaint"
+                        value={description}
+                        onChange={(e) => handleInputChange(e, 'description')}
+                    />
+                </div>
+            </div>
         </Modal>
     )
 }

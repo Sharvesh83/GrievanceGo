@@ -1,22 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { getinfo, resolveComplaint } from './Redux/actions'
-import {
-    Box,
-    Table,
-    Thead,
-    Tbody,
-    Tr,
-    Th,
-    Td,
-    TableContainer,
-    Popover,
-    PopoverTrigger,
-    PopoverContent,
-    PopoverBody,
-} from '@chakra-ui/react'
 import WarningModal from './WarningModal'
-import sortIcon from '../assets/sort.svg' // Import icon for sorting
+import sortIcon from '../assets/sort.svg'
 
 const formatDate = date => {
     if (isNaN(new Date(date).getTime())) {
@@ -30,6 +16,38 @@ const formatDate = date => {
     return `${day}-${month}-${year}`
 }
 
+const SortPopover = ({ onToggle, currentOrder, label }) => {
+    const [isOpen, setIsOpen] = useState(false);
+
+    return (
+        <div className="relative inline-block ml-1">
+            <button
+                className="bg-white p-[3px] rounded-[2px] transition-transform hover:bg-gray-100"
+                onClick={() => setIsOpen(!isOpen)}
+                onBlur={() => setTimeout(() => setIsOpen(false), 200)}
+            >
+                <img
+                    src={sortIcon}
+                    alt="Sort"
+                    style={{
+                        width: '10px',
+                        height: '10px',
+                        transform: currentOrder === 'asc' ? 'rotate(0deg)' : 'rotate(180deg)',
+                    }}
+                />
+            </button>
+            {isOpen && (
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-max bg-white text-black text-xs p-2 rounded shadow-lg z-50 font-sans border border-gray-200">
+                    <button onClick={() => { onToggle(); setIsOpen(false); }} className="w-full text-left hover:bg-gray-50 px-2 py-1 rounded">
+                        {label}
+                    </button>
+                </div>
+            )}
+        </div>
+    )
+}
+
+
 const ComplaintTable = ({
     onComplaintClick,
     onResolveClick,
@@ -40,9 +58,9 @@ const ComplaintTable = ({
     const [showWarningModal, setShowWarningModal] = useState(false)
     const [selectedComplaint, setSelectedComplaint] = useState(null)
     const [sortingOrder, setSortingOrder] = useState({
-        department: null, // Initially set to null to indicate no sorting
-        status: null, // Initially set to null to indicate no sorting
-        resolvedOn: null, // Initially set to null to indicate no sorting
+        department: null,
+        status: null,
+        resolvedOn: null,
     })
 
     useEffect(() => {
@@ -97,245 +115,84 @@ const ComplaintTable = ({
     }
 
     return (
-        <Box paddingLeft="85px" paddingTop="35px" width="95%">
-            <Box maxH="60vh" overflowY="auto">
-                <TableContainer overflowX="unset" overflowY="unset">
-                    <Table>
-                        <Thead
-                            alignItems="center"
-                            position="sticky"
-                            top={0}
-                            zIndex="docked"
-                        >
-                            <Tr>
-                                <Th borderLeftRadius="7px" fontSize="14px">
-                                    Complaint
-                                </Th>
-                                <Th fontSize="14px">
-                                    Department{' '}
-                                    <Popover trigger="hover">
-                                        <PopoverTrigger>
-                                            <Box
-                                                as="button"
-                                                style={{
-                                                    backgroundColor: 'white',
-                                                    padding: '3px',
-                                                    borderRadius: '2px',
-                                                }}
-                                                onClick={() =>
-                                                    toggleSortingOrder(
-                                                        'department'
-                                                    )
-                                                }
-                                            >
-                                                <img
-                                                    src={sortIcon}
-                                                    alt="Sort"
-                                                    style={{
-                                                        width: '10px',
-                                                        height: '10px',
-                                                        transform:
-                                                            sortingOrder.department ===
-                                                            'asc'
-                                                                ? 'rotate(0deg)'
-                                                                : 'rotate(180deg)',
-                                                    }}
-                                                />
-                                            </Box>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            color="black"
-                                            fontFamily="body"
-                                            fontSize="12px"
-                                            width="max-content"
-                                            placement="top"
-                                        >
-                                            <PopoverBody>
-                                                A-Z || Z-A
-                                            </PopoverBody>
-                                        </PopoverContent>
-                                    </Popover>
-                                </Th>
-                                <Th fontSize="14px">Created On</Th>
-                                <Th fontSize="14px">
-                                    Resolved On{' '}
-                                    <Popover trigger="hover">
-                                        <PopoverTrigger>
-                                            <Box
-                                                as="button"
-                                                style={{
-                                                    backgroundColor: 'white',
-                                                    padding: '3px',
-                                                    borderRadius: '2px',
-                                                }}
-                                                onClick={() =>
-                                                    toggleSortingOrder(
-                                                        'resolvedOn'
-                                                    )
-                                                }
-                                            >
-                                                <img
-                                                    src={sortIcon}
-                                                    alt="Sort"
-                                                    style={{
-                                                        width: '10px',
-                                                        height: '10px',
-                                                        transform:
-                                                            sortingOrder.resolvedOn ===
-                                                            'asc'
-                                                                ? 'rotate(0deg)'
-                                                                : 'rotate(180deg)',
-                                                    }}
-                                                />
-                                            </Box>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            color="black"
-                                            fontFamily="body"
-                                            fontSize="12px"
-                                            width="max-content"
-                                            placement="top"
-                                        >
-                                            <PopoverBody>
-                                                Ascending || Descending
-                                            </PopoverBody>
-                                        </PopoverContent>
-                                    </Popover>
-                                </Th>
-                                <Th fontSize="14px">
-                                    Status{' '}
-                                    <Popover trigger="hover">
-                                        <PopoverTrigger>
-                                            <Box
-                                                as="button"
-                                                style={{
-                                                    backgroundColor: 'white',
-                                                    padding: '3px',
-                                                    borderRadius: '2px',
-                                                }}
-                                                onClick={() =>
-                                                    toggleSortingOrder('status')
-                                                }
-                                            >
-                                                <img
-                                                    src={sortIcon}
-                                                    alt="Sort"
-                                                    style={{
-                                                        width: '10px',
-                                                        height: '10px',
-                                                        transform:
-                                                            sortingOrder.status ===
-                                                            'asc'
-                                                                ? 'rotate(0deg)'
-                                                                : 'rotate(180deg)',
-                                                    }}
-                                                />
-                                            </Box>
-                                        </PopoverTrigger>
-                                        <PopoverContent
-                                            color="black"
-                                            fontFamily="body"
-                                            fontSize="12px"
-                                            width="max-content"
-                                            placement="top"
-                                        >
-                                            <PopoverBody>
-                                                A-Z || Z-A
-                                            </PopoverBody>
-                                        </PopoverContent>
-                                    </Popover>
-                                </Th>
-                                <Th fontSize="14px">Replies</Th>
-                                <Th fontSize="14px" borderRightRadius="7px">
-                                    Action
-                                </Th>
-                            </Tr>
-                            <Tr h="26px"></Tr>
-                        </Thead>
-                        <Tbody alignItems="center">
-                            {sortedComplaintsData.map((complaint, index) => {
-                                let dte = new Date(complaint.createdOn)
-                                const isResolved =
-                                    complaint.status === 'Resolved'
+        <div className="pl-[85px] pt-[35px] w-[95%]">
+            <div className="max-h-[60vh] overflow-y-auto pr-2">
+                <table className="w-full border-separate border-spacing-y-5 text-left">
+                    <thead className="sticky top-0 z-10 bg-transparent">
+                        <tr>
+                            <th className="text-sm font-bold pb-2 pl-4">Complaint</th>
+                            <th className="text-sm font-bold pb-2">
+                                Department
+                                <SortPopover
+                                    onToggle={() => toggleSortingOrder('department')}
+                                    currentOrder={sortingOrder.department}
+                                    label="A-Z || Z-A"
+                                />
+                            </th>
+                            <th className="text-sm font-bold pb-2">Created On</th>
+                            <th className="text-sm font-bold pb-2">
+                                Resolved On
+                                <SortPopover
+                                    onToggle={() => toggleSortingOrder('resolvedOn')}
+                                    currentOrder={sortingOrder.resolvedOn}
+                                    label="Ascending || Descending"
+                                />
+                            </th>
+                            <th className="text-sm font-bold pb-2">
+                                Status
+                                <SortPopover
+                                    onToggle={() => toggleSortingOrder('status')}
+                                    currentOrder={sortingOrder.status}
+                                    label="A-Z || Z-A"
+                                />
+                            </th>
+                            <th className="text-sm font-bold pb-2">Replies</th>
+                            <th className="text-sm font-bold pb-2 pr-4">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sortedComplaintsData.map((complaint, index) => {
+                            const isResolved = complaint.status === 'Resolved'
 
-                                return (
-                                    <React.Fragment key={index}>
-                                        <Tr
-                                            height="48px"
-                                            bg="white"
-                                            borderRadius="7px"
-                                            rowGap="20px"
-                                        >
-                                            <Td
-                                                borderLeftRadius="7px"
-                                                fontFamily="Roboto-Regular"
-                                                textDecoration="underline"
-                                            >
-                                                <button
-                                                    onClick={() =>
-                                                        onComplaintClick(
-                                                            complaint
-                                                        )
-                                                    }
-                                                >
-                                                    {complaint.subject}
-                                                </button>
-                                            </Td>
-                                            <Td fontFamily="Roboto-Regular">
-                                                {complaint.department}
-                                            </Td>
-                                            <Td fontFamily="Roboto-Regular">
-                                                {formatDate(
-                                                    complaint.createdOn
-                                                )}
-                                            </Td>
-                                            <Td fontFamily="Roboto-Regular">
-                                                {formatDate(
-                                                    complaint.resolvedOn || '-'
-                                                )}
-                                            </Td>
-                                            <Td fontFamily="Roboto-Regular">
-                                                {complaint.status}
-                                            </Td>
-                                            <Td
-                                                fontFamily="Roboto-Regular"
-                                                textDecoration="underline"
-                                            >
-                                                <button
-                                                    onClick={() =>
-                                                        onReplyClick(complaint)
-                                                    }
-                                                >
-                                                    view
-                                                </button>
-                                            </Td>
-                                            <Td
-                                                borderRightRadius="7px"
-                                                fontFamily="Roboto-Medium"
-                                            >
-                                                {isResolved ? (
-                                                    'Resolved'
-                                                ) : (
-                                                    <button
-                                                        onClick={() =>
-                                                            handleResolveClick(
-                                                                complaint
-                                                            )
-                                                        }
-                                                    >
-                                                        Resolve
-                                                    </button>
-                                                )}
-                                            </Td>
-                                        </Tr>
-                                        <br />
-                                    </React.Fragment>
-                                )
-                            })}
-                        </Tbody>
-                    </Table>
-                </TableContainer>
-            </Box>
+                            return (
+                                <tr key={index} className="bg-white h-[48px] rounded-[7px] shadow-sm hover:shadow-md transition-shadow">
+                                    <td className="font-['Roboto'] underline pl-4 rounded-l-[7px]">
+                                        <button onClick={() => onComplaintClick(complaint)}>
+                                            {complaint.subject}
+                                        </button>
+                                    </td>
+                                    <td className="font-['Roboto']">
+                                        {complaint.department}
+                                    </td>
+                                    <td className="font-['Roboto']">
+                                        {formatDate(complaint.createdOn)}
+                                    </td>
+                                    <td className="font-['Roboto']">
+                                        {formatDate(complaint.resolvedOn || '-')}
+                                    </td>
+                                    <td className="font-['Roboto']">
+                                        {complaint.status}
+                                    </td>
+                                    <td className="font-['Roboto'] underline">
+                                        <button onClick={() => onReplyClick(complaint)}>
+                                            view
+                                        </button>
+                                    </td>
+                                    <td className="font-['Roboto'] font-medium rounded-r-[7px]">
+                                        {isResolved ? (
+                                            'Resolved'
+                                        ) : (
+                                            <button onClick={() => handleResolveClick(complaint)}>
+                                                Resolve
+                                            </button>
+                                        )}
+                                    </td>
+                                </tr>
+                            )
+                        })}
+                    </tbody>
+                </table>
+            </div>
             {showWarningModal && (
                 <WarningModal
                     onClose={() => setShowWarningModal(false)}
@@ -345,7 +202,7 @@ const ComplaintTable = ({
                     }}
                 />
             )}
-        </Box>
+        </div>
     )
 }
 

@@ -33,13 +33,14 @@ const Registration = data => {
     }
 }
 
-let getinfo = (userId) => {
+let getinfo = (userId = null) => {
     return async dispatch => {
         try {
-            let urlStr = 'http://localhost:3000/api/info';
-            if (userId) {
-                urlStr += `?userId=${userId}`;
-            }
+            // Distinct endpoints for security
+            let urlStr = userId
+                ? `http://localhost:3000/api/user-grievances?userId=${userId}`
+                : `http://localhost:3000/api/all-grievances`;
+
             let url = await fetch(urlStr, {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' },

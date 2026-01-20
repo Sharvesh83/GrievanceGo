@@ -1,55 +1,37 @@
 import React from 'react'
-import {
-    Button,
-    AlertDialog,
-    AlertDialogBody,
-    AlertDialogFooter,
-    AlertDialogContent,
-    AlertDialogOverlay,
-} from '@chakra-ui/react'
+import Modal from './Modal'
 
 const WarningModal = ({ onClose, onConfirm }) => {
-    return (
-        <AlertDialog isOpen={true} onClose={onClose}>
-            <AlertDialogOverlay>
-                <AlertDialogContent
-                    maxH="149px"
-                    maxW="557px"
-                    h="100%"
-                    w="100%"
-                    bgColor="rgba(169, 160, 222, 1)"
-                >
-                    <AlertDialogBody
-                        fontSize="18px"
-                        maxW="530px"
-                        fontFamily="Roboto-Bold"
-                        paddingTop="20px"
-                    >
-                        Are you sure you want to mark this complaint as
-                        resolved? This action cannot be undone.
-                    </AlertDialogBody>
+    const footer = (
+        <>
+            <button
+                className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors font-bold"
+                onClick={onConfirm}
+            >
+                Resolve
+            </button>
+            <button
+                className="text-black bg-transparent hover:bg-white/20 px-4 py-2 rounded transition-colors font-bold"
+                onClick={onClose}
+            >
+                Cancel
+            </button>
+        </>
+    )
 
-                    <AlertDialogFooter fontFamily="Roboto-Bold">
-                        <Button
-                            bgColor="black"
-                            color="white"
-                            onClick={onConfirm}
-                        >
-                            Resolve
-                        </Button>
-                        <Button
-                            onClick={onClose}
-                            variant="link"
-                            paddingLeft="16px"
-                            paddingRight="16px"
-                            color="black"
-                        >
-                            Cancel
-                        </Button>
-                    </AlertDialogFooter>
-                </AlertDialogContent>
-            </AlertDialogOverlay>
-        </AlertDialog>
+    return (
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            footer={footer}
+            size="md"
+            contentClassName="bg-[#A9A0DE]" // rgba(169, 160, 222, 1)
+        >
+            <div className="text-[18px] font-bold py-5">
+                Are you sure you want to mark this complaint as
+                resolved? This action cannot be undone.
+            </div>
+        </Modal>
     )
 }
 

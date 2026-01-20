@@ -1,18 +1,7 @@
-import React, { useEffect, useState } from 'react'
-import {
-    Box,
-    Text,
-    Modal,
-    ModalOverlay,
-    ModalContent,
-    ModalCloseButton,
-    ModalBody,
-    ModalFooter,
-    Button,
-    Input,
-} from '@chakra-ui/react'
+import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { addingchat } from './Redux/actions'
+import Modal from './Modal'
 
 const ReplyModal = ({ onClose, complaint }) => {
     const { subject, description, _id } = complaint
@@ -31,120 +20,82 @@ const ReplyModal = ({ onClose, complaint }) => {
 
     const dispatch = useDispatch()
     let addChat = () => {
-        dispatch(addingchat({ _id, chat }))
+        const chatData = {
+            sender: 'Official', // ReplyModal is distinctively for officials or replies? Assuming standard reply usually implies user or context based, but code had 'Official' hardcoded logic in viewer. 
+            // Wait, previous viewer checked for [OFFICIAL] prefix. 
+            // Let's stick to 'Official' here if this modal is for officials (implied by name or context usually).
+            // Actually, let's look at usage. ReplyModal usually used by officials in this app context based on `OfficialDashboard`.
+            // Let's look at imports in OfficialDashboard. Yes, it imports ReplyModal.
+            message: chat,
+            timestamp: new Date()
+        }
+        dispatch(addingchat({ _id, chat: chatData }))
+        setChat('') // Clear input after sending
     }
 
+    const footer = (
+        <div className="w-full flex justify-end">
+            {showInput ? (
+                <div className="flex w-full items-center">
+                    <input
+                        className="w-full h-[39px] px-3 bg-white mr-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        placeholder="Enter your message"
+                        value={chat}
+                        onChange={event => {
+                            setChat(event.target.value)
+                        }}
+                    />
+                    <button
+                        className="bg-black text-white px-4 py-2 rounded h-[39px] hover:bg-gray-800 transition-colors"
+                        onClick={addChat}
+                    >
+                        Send
+                    </button>
+                </div>
+            ) : (
+                <button
+                    className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 transition-colors"
+                    onClick={handleReplyClick}
+                >
+                    Reply
+                </button>
+            )}
+        </div>
+    )
+
     return (
-        <Modal isOpen={true} onClose={onClose} isCentered>
-            <ModalOverlay />
-            <ModalContent
-                bgColor="rgba(169, 160, 222, 1)"
-                maxHeight="523px"
-                maxWidth="596px"
-                height="100%"
-                width="100%"
-            >
-                <ModalCloseButton />
-                <ModalBody>
-                    <Box
-                        color="white"
-                        bgColor="rgba(101, 83, 193, 1)"
-                        marginTop="37px"
-                        marginLeft="3px"
-                        paddingTop="10px"
-                        paddingLeft="16px"
-                        h="142px"
-                        w="542px"
-                        fontFamily="Roboto-Bold"
-                    >
-                        <Box>
-                            <Text display="inline">{subject}</Text>
-
-                            <Text paddingTop="4px" fontFamily="Roboto-Regular">
-                                {description}
-                            </Text>
-                        </Box>
-                    </Box>
-                    <Box
-                        marginTop="15px"
-                        overflowY="auto"
-                        overflowX="hidden"
-                        maxH="231px"
-                    >
-                        {redData[0].chats?.map((comp, index) => {
-                            return (
-                                <Box
-                                    bgColor="white"
-                                    marginTop="8px"
-                                    marginLeft="3px"
-                                    paddingTop="10px"
-                                    paddingLeft="13px"
-                                    paddingRight="15px"
-                                    paddingBottom="10px"
-                                    w="542px"
-                                    fontFamily="Roboto-Bold"
-                                >
-                                    <Box key={index}>
-                                        {/* <Text fontSize="14px" color="black">
-                                            {comp.sender}
-                                        </Text> */}
-                                        <Text
-                                            fontFamily="Roboto-Medium"
-                                            w="80%"
-                                            fontSize="15px"
-                                        >
-                                            {comp}
-                                        </Text>
-                                        {/* <Text
-                                            color="rgba(130, 130, 130, 1)"
-                                            fontFamily="Roboto-Italic"
-                                            textAlign="right"
-                                            fontSize="12px"
-                                        >
-                                        </Text> */}
-                                    </Box>
-                                </Box>
-                            )
-                        })}
-                    </Box>
-                </ModalBody>
-
-                <ModalFooter>
-                    {showInput ? (
-                        <>
-                            <Input
-                                w="472px"
-                                h="39px"
-                                placeholder="Enter your message"
-                                bgColor="white"
-                                marginRight="10px"
-                                onChange={event => {
-                                    setChat(event.target.value)
-                                }}
-                            />
-                            <Button
-                                colorScheme="black"
-                                bgColor="black"
-                                color="white"
-                                onClick={addChat}
+        <Modal
+            isOpen={true}
+            onClose={onClose}
+            footer={footer}
+            size="xl"
+            contentClassName="bg-[#A9A0DE]" // rgba(169, 160, 222, 1)
+        >
+            <div className="p-1">
+                <div className="bg-[#6553C1] text-white p-4 rounded-md font-bold mb-4 font-['Roboto']">
+                    <div>
+                        <span className="block mb-1">{subject}</span>
+                        <span className="block font-normal pt-1">{description}</span>
+                    </div>
+                </div>
+                <div className="bg-transparent mt-4 overflow-y-auto max-h-[231px] px-1">
+                    {redData[0].chats?.map((comp, index) => {
+                        return (
+                            <div
+                                key={index}
+                                className="bg-white mt-2 p-3 rounded-md w-full font-bold shadow-sm"
                             >
-                                Send
-                            </Button>
-                        </>
-                    ) : (
-                        <Button
-                            colorScheme="black"
-                            bgColor="black"
-                            color="white"
-                            onClick={handleReplyClick}
-                        >
-                            Reply
-                        </Button>
-                    )}
-                </ModalFooter>
-            </ModalContent>
+                                <div>
+                                    <p className="font-['Roboto'] font-medium text-[15px] w-[80%]">
+                                        {comp}
+                                    </p>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
         </Modal>
-        // <div>hellooo</div>
     )
 }
 

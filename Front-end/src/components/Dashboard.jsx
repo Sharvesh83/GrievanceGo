@@ -1,6 +1,4 @@
-import React, { useEffect } from 'react'
-import { Box, useDisclosure } from '@chakra-ui/react'
-import { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import bg2 from '../assets/bg2.png'
 import Navbar from './Navbar'
 import ComplaintTable from './Tables'
@@ -10,6 +8,7 @@ import WarningModal from './WarningModal'
 import ReplyModal from './ReplyModal'
 import { useSelector, useDispatch } from 'react-redux'
 import { getinfo } from './Redux/actions'
+import { useDisclosure } from '../hooks/useDisclosure'
 
 const Dashboard = () => {
     const {
@@ -60,12 +59,9 @@ const Dashboard = () => {
     }
 
     return (
-        <Box
-            bgImage={`url(${bg2})`}
-            bgSize="cover"
-            bgPosition="center"
-            bgRepeat="no-repeat"
-            minHeight="100vh"
+        <div
+            className="min-h-screen bg-cover bg-center bg-no-repeat"
+            style={{ backgroundImage: `url(${bg2})` }}
         >
             <Navbar onRegisterNewClick={openNewComplaintModal} />
             <ComplaintTable
@@ -90,7 +86,7 @@ const Dashboard = () => {
                 />
             )}
             {isWarningModalOpen && <WarningModal onClose={closeWarningModal} />}
-        </Box>
+        </div>
     )
 }
 

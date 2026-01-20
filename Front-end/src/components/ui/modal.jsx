@@ -1,43 +1,65 @@
 import React from 'react';
+import { createPortal } from 'react-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 
-const Modal = ({ isOpen, onClose, title, children }) => {
-    return (
+const Modal = ({ isOpen, onClose, title, children, maxWidth = "max-w-lg" }) => {
+    // Prevent scrolling when modal is open
+    React.useEffect(() => {
+        if (isOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [isOpen]);
+
+    return createPortal(
         <AnimatePresence>
             {isOpen && (
-                <>
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={onClose}
-                        className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50"
+                        className="fixed inset-0 bg-black/60 backdrop-blur-md transition-all duration-300"
                     />
+
                     {/* Modal Content */}
                     <motion.div
                         initial={{ opacity: 0, scale: 0.95, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 sm:rounded-lg"
+                        transition={{ duration: 0.3, type: "spring", damping: 30, stiffness: 300 }}
+                        className={`relative w-full ${maxWidth} max-h-[90vh] flex flex-col bg-white shadow-2xl rounded-2xl overflow-hidden z-[10000]`}
                     >
-                        <div className="flex flex-col space-y-1.5 text-center sm:text-left">
-                            <div className="flex justify-between items-center">
-                                <h2 className="text-lg font-semibold leading-none tracking-tight">{title}</h2>
-                                <Button variant="ghost" size="icon" className="h-6 w-6 rounded-full" onClick={onClose}>
-                                    <X className="h-4 w-4" />
-                                </Button>
-                            </div>
+                        {/* Header */}
+                        <div className="flex justify-between items-center p-6 border-b bg-gray-50/50 shrink-0">
+                            <h2 className="text-xl font-bold tracking-tight text-gray-900 line-clamp-1">{title}</h2>
+                            <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 rounded-full hover:bg-red-50 hover:text-red-500 transition-colors shrink-0"
+                                onClick={onClose}
+                            >
+                                <X className="h-4 w-4" />
+                            </Button>
                         </div>
-                        <div className="space-y-4 py-4">
+
+                        {/* Body - Scrollable */}
+                        <div className="p-6 overflow-y-auto custom-scrollbar grow">
                             {children}
                         </div>
                     </motion.div>
-                </>
+                </div>
             )}
-        </AnimatePresence>
+        </AnimatePresence>,
+        document.body
     );
 };
 

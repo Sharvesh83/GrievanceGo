@@ -12,7 +12,18 @@ const DataSchema = mongoose.Schema(
     description: { type: String, require: true },
     userId: { type: String, required: true }, // Auth0 sub
     createdBy: { type: String, required: true }, // Auth0 email/name
-    chats: [{ type: String }],
+    chats: [{
+      sender: String,
+      message: String,
+      timestamp: Date
+    }],
+    aiAnalysis: {
+      summary: String,
+      department: String,
+      priority: String,
+      sentiment: String,
+      category: String
+    },
     createdOn: { type: Date },
     resolvedOn: { type: Date },
     status: { type: String, default: "In progress" },
@@ -24,6 +35,20 @@ const DataSchema = mongoose.Schema(
 
 // module.exports = mongoose.model("reginfo", DataSchema);
 
+const UserSchema = mongoose.Schema(
+  {
+    name: { type: String, required: true },
+    email: { type: String, required: true, unique: true },
+    password: { type: String, required: true },
+    role: { type: String, enum: ["citizen", "official"], default: "citizen" },
+    phone: { type: String },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const User = mongoose.model("User", UserSchema);
 const Grievance = mongoose.model("Grievance", DataSchema);
 
-module.exports = { Grievance };
+module.exports = { Grievance, User };
